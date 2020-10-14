@@ -45,6 +45,27 @@ class DingDingPlugin(NotificationPlugin):
         else:
             return None
 
+    def findrepeatstart(self, origin, matchlen):
+    	print("matchlen:" + str(matchlen))
+    	if matchlen < 2 or len(origin) <= matchlen:
+    		return -1
+    	i = origin.find(origin[0:matchlen], 1)
+    	if i == -1:
+    		return findrepeatstart(origin, matchlen // 2)
+    	return i
+
+    def findrepeatend(self, origin):
+    	return origin.rfind("...")
+
+    def cutrepeat(self, origin):
+    	repeatstart = findrepeatstart(origin, 120)
+    	if repeatstart == -1:
+    		return origin
+    	repeatend = findrepeatend(origin)
+    	if (repeatend == -1):
+    		return origin
+    	return origin[0:repeatstart] + origin[repeatend:]
+
     def post_process(self, group, event, *args, **kwargs):
         """
         Process error.
@@ -58,12 +79,7 @@ class DingDingPlugin(NotificationPlugin):
         access_token = self.get_option('access_token', group.project)
         send_url = DingTalk_API.format(token=access_token)
         title = u"New alert from {}".format(event.project.slug)
-        message = event.message
-        if len(message) > 100:
-        	temp = message[0:20]
-        	i = message.find(temp, 1)
-        	if i > -1:
-        		message = message[i:]
+        message = self.cutrepeat(event.message)
         data = {
             "msgtype": "markdown",
             "markdown": {
