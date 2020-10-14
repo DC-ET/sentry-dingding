@@ -46,22 +46,21 @@ class DingDingPlugin(NotificationPlugin):
             return None
 
     def findrepeatstart(self, origin, matchlen):
-    	print("matchlen:" + str(matchlen))
     	if matchlen < 2 or len(origin) <= matchlen:
     		return -1
     	i = origin.find(origin[0:matchlen], 1)
     	if i == -1:
-    		return findrepeatstart(origin, matchlen // 2)
+    		return self.findrepeatstart(origin, matchlen // 2)
     	return i
 
     def findrepeatend(self, origin):
     	return origin.rfind("...")
 
     def cutrepeat(self, origin):
-    	repeatstart = findrepeatstart(origin, 120)
+    	repeatstart = self.findrepeatstart(origin, 120)
     	if repeatstart == -1:
     		return origin
-    	repeatend = findrepeatend(origin)
+    	repeatend = self.findrepeatend(origin)
     	if (repeatend == -1):
     		return origin
     	return origin[0:repeatstart] + origin[repeatend:]
