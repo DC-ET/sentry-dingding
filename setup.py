@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="sentry-dingding",
-    version='v4.0',
+    version='v5.0',
     author='ansheng',
     author_email='yangjiayi@acg0705.com',
     url='https://github.com/15058126273/sentry-dingding',
